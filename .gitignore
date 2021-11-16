@@ -1,0 +1,3 @@
+terraform-instances-provisioning/instances/terraform.tfvars
+terraform-instances-provisioning/instances/.terraform/
+install.txt
