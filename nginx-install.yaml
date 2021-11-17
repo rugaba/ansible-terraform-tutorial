@@ -1,31 +1,54 @@
 ---
 
 - hosts: all
-
+  name: play1
   become: yes
-
   tasks:
-
   - name: Installs nginx web server
-
     apt:
-
       name: nginx
-
       state: present
-
       update_cache: true
-
     notify:
-
     - start nginx
+  - name: Installs tree package
+    apt:
+      name: tree
+      state: present
+      update_cache: true
+  - name: Installs git package
+    apt:
+      name: git
+      state: present
+      update_cache: true
+    tags:
+      - install-git
+  - name: retrieving a remote repository on github
+    command: git clone https://github.com/rugaba/ansible-terraform-tutorial-${{version}}.git
+    args:
+      chdir: /home/terraform
+      creates:  /home/terraform/ansible-terraform-tutorial
+
+  - name: copy file to destination
+    copy:
+    src: /Users/jprugaba/ansible-projects/test.sh
+    dest: /home/terraform/test.sh
+    mode: '0755'
+    follow: yes
+    
+  - name: run a shell script
+    shell:
+      cmd: test.sh
+    args:
+      chdir: /home/terraform
+
+  - name: Run a script using an executable in a system path
+    script: /Users/jprugaba/ansible-projects/test-script.py
+    args:
+      executable: python3
 
   handlers:
-
   - name: start nginx
-
     service:
-
       name: nginx
-
       state: started
